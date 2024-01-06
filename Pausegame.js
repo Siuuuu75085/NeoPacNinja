@@ -1,42 +1,38 @@
-requestAnimationFrame(mainLoop);  
-const keys = {
-    KeyP : false,
-    Enter : false,
-    listener(e){
-       if(keys[e.code] !== undefined){
-           keys[e.code] = e.type === "keydown";
-           e.preventDefault();
-        }
-    }
-}
-addEventListener("keydown",keys.listener);
-addEventListener("keyup",keys.listener);
+// let gamePaused = () => {
 
-var currentState = startGame;
+let gamePaused = false;
 
-function startGame (){
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    gamePause();
+  } 
+});
 
-   if(keys.Enter){
-      keys.Enter = false;
-      currentState = game;  
-   }
-}
-function pause(){
 
-    if(keys.KeyP){
-       keys.KeyP = false; 
-       currentState = game;  
-    }
+let gameContinue = () => {
+  if (gamePaused) {
+    gamePaused = false;
+    gameInterval = setInterval(gameLoop,10);
+  }
+};
 
-}
-function game(){
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    gameContinue();
+  }
+});
 
-    if(keys.KeyP){
-       keys.KeyP = false; 
-       currentState = pause;  
-    }
-}
-function mainLoop(time){
-    currentState(); 
-    requestAnimationFrame(mainLoop);
-}
+
+let gamePause = () => {
+  if (!gamePaused) {
+    gamePaused = true;
+    drawGamePaused();
+    clearInterval(gameInterval);
+  }
+};
+
+let drawGamePaused = () => {
+  canvasContext.font = "40px Emulogic";
+  canvasContext.fillStyle = "white";
+  canvasContext.fillText("Game Paused!", 110, 240);
+};
